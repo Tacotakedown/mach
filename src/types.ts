@@ -12,6 +12,7 @@ interface PackageSettings {
     /**
      * Specifies type of instrument.
      * - `React` instruments will be created with a `BaseInstrument` harness that exposes an `MSFS_REACT_MOUNT` element for mounting.
+     * - `Solid` instruments will be created with a `BaseInstrument` harness that exposes an `MSFS_SOLID_MOUNT` element for mounting.
      * - `BaseInstrument` instruments must specify the `instrumentId` and `mountElementId` to match the instrument configuration.
      */
     type: string;
@@ -19,6 +20,14 @@ interface PackageSettings {
     fileName?: string;
     /** Simulator packages to import in the HTML template. */
     imports?: string[];
+}
+
+interface SolidInstrumentPackageSettings extends PackageSettings {
+    type: "solid";
+    /** Optional parameter to specify template ID. Defaults to `Instrument.name`. */
+    templateId?: string;
+    /** Whether the instrument is interactive or not. Defaults to `true`. */
+    isInteractive?: boolean;
 }
 
 interface ReactInstrumentPackageSettings extends PackageSettings {
@@ -50,7 +59,7 @@ export interface Instrument {
     index: string;
 
     /** When passed a configuration object, enables a simulator package export. */
-    simulatorPackage?: ReactInstrumentPackageSettings | BaseInstrumentPackageSettings;
+    simulatorPackage?: SolidInstrumentPackageSettings | ReactInstrumentPackageSettings | BaseInstrumentPackageSettings;
 
     /** Instruments to import as ESM modules. */
     modules?: Instrument[];
@@ -108,6 +117,14 @@ export const InstrumentSchema: z.ZodType<Instrument> = z.lazy(() =>
 
         simulatorPackage: z
             .union([
+                z.object({
+                    type: z.literal("solid"),
+                    fileName: z.string().optional(),
+                    templateName: z.string().optional(),
+                    imports: z.array(z.string()).optional(),
+                    templateId: z.string().optional(),
+                    isInteractive: z.boolean().optional(),
+                }),
                 z.object({
                     type: z.literal("react"),
                     fileName: z.string().optional(),
