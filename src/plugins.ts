@@ -84,7 +84,7 @@ export const writePackageSources = (args: MachArgs, instrument: Instrument): Plu
                 const cssPath = path.join(packageTarget, `${fileName}.css`);
                 const jsPath = path.join(packageTarget, `${fileName}.js`);
                 const instrumentPath =
-                    instrument.simulatorPackage.type === "react" || instrument.simulatorPackage.type == "solid"
+                    instrument.simulatorPackage.type === "react" || instrument.simulatorPackage.type === "solid"
                         ? path.join(packageTarget, `${fileName}.index.js`)
                         : jsPath;
 
@@ -94,7 +94,7 @@ export const writePackageSources = (args: MachArgs, instrument: Instrument): Plu
                     mountElementId:
                         instrument.simulatorPackage.type === "react"
                             ? "MSFS_REACT_MOUNT"
-                            : instrument.simulatorPackage.type == "solid"
+                            : instrument.simulatorPackage.type === "solid"
                               ? "MSFS_SOLID_MOUNT"
                               : instrument.simulatorPackage.mountElementId,
                     imports: instrument.simulatorPackage.imports ?? [],
@@ -106,7 +106,7 @@ export const writePackageSources = (args: MachArgs, instrument: Instrument): Plu
                 await fs.writeFile(cssPath, css);
                 await fs.writeFile(jsPath, js);
 
-                if (instrument.simulatorPackage.type === "react" || instrument.simulatorPackage.type == "solid") {
+                if (instrument.simulatorPackage.type === "react" || instrument.simulatorPackage.type === "solid") {
                     await fs.writeFile(
                         instrumentPath,
                         await renderFile(path.join(__dirname, "./templates/instrument.cjs"), templateParams),
